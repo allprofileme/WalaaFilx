@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WalaaFlix | ولاء فليكس</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #030f17; /* لون سينمانا الأصلي */
+            color: white;
+            font-family: 'Tahoma', sans-serif;
+        }
+        .movie-card:hover {
+            transform: scale(1.05);
+            transition: 0.3s;
+        }
+        /* منع الإعلانات المنبثقة إذا أضفت روابط خارجية */
+        iframe { pointer-events: none; } 
+    </style>
+</head>
+<body>
+
+    <nav class="p-4 bg-[#051520] flex justify-between items-center border-b border-gray-800 sticky top-0 z-50">
+        <div class="text-2xl font-bold text-red-600">Walaa<span class="text-white">Flix</span></div>
+        <div class="flex gap-4">
+            <i class="fa-solid fa-magnifying-glass text-xl cursor-pointer"></i>
+            <i class="fa-solid fa-user text-xl cursor-pointer"></i>
+        </div>
+    </nav>
+
+    <div class="p-5">
+        <h2 class="text-xl mb-4 border-r-4 border-red-600 pr-3">الأفلام المضافة حديثاً</h2>
+        
+        <div id="movie-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            </div>
+    </div>
+
+    <script>
+        const API_KEY = '851ccad574593617d921dde51303751c';
+        const grid = document.getElementById('movie-grid');
+
+        // دالة جلب الأفلام من TMDB باللغة العربية
+        async function fetchMovies() {
+            try {
+                const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=ar-SA`);
+                const data = await response.json();
+                
+                grid.innerHTML = data.results.map(movie => `
+                    <div class="movie-card bg-[#051520] rounded-lg overflow-hidden shadow-lg cursor-pointer">
+                        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" class="w-full h-72 object-cover">
+                        <div class="p-2">
+                            <h3 class="text-sm font-semibold truncate">${movie.title}</h3>
+                            <div class="flex justify-between items-center mt-1">
+                                <span class="text-yellow-500 text-xs"><i class="fa-solid fa-star"></i> ${movie.vote_average}</span>
+                                <span class="text-gray-400 text-[10px]">${movie.release_date.split('-')[0]}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error("خطأ في جلب البيانات، تأكد من اتصال الإنترنت (آسيا/زين)");
+            }
+        }
+
+        fetchMovies();
+    </script>
+</body>
+</html>
